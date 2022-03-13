@@ -320,8 +320,8 @@ const App = () => {
   return (
     <div className='container'>
       <div className='top'>
-        <div className='title'>WORDLE CLONE</div>
-        <button className="reset-board" onClick={resetBoard}>{"\u27f3"}</button>
+        <div className='title'>WORDL3</div>
+        {/* <button className="reset-board" onClick={resetBoard}>{"\u27f3"}</button> */}
       </div>
       {message && <div className='message'>
         {message}

@@ -1,5 +1,6 @@
 .container{
     display: flex;
+    background: #EFD8A7;
     position: relative;
     flex-direction: column;
     justify-content: space-between;
@@ -43,7 +44,8 @@
     font-weight: 700;
     width: 60px;
     height: 60px;
-    border: 2px solid #d3d6da;
+    border: 2px solid #121213;
+    border-radius: 8px;
 }
 
 .reset-board{
@@ -57,7 +59,7 @@
     display: flex;
     flex-direction: row;
     padding:10px 20px;
-    border-bottom: 1px solid grey;
+    border-bottom: 1px solid #121213;
 }
 .bottom{
 

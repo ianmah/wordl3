@@ -20,6 +20,8 @@ button{
     padding: 22px 18px;
     border: none;
     text-transform: uppercase;
+    border: 2px solid #121213;
+    border-radius: 8px;
 }
 .key-correct{
     background: #6aaa64;
