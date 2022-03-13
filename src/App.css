@@ -90,17 +90,50 @@
   }
 
 .correct{
-    background: #6aaa64;
-    color: #fff;
+    /* background: #6aaa64; */
+    background: linear-gradient(122.83deg, #C3FFA7 25.08%, #5BF2C5 92.36%);
+
+    color: #000;
 
 }
 
 .present{
-    background: #c9b458;
-    color: #fff;
+    /* background: #c9b458;
+     */
+     background: linear-gradient(113.32deg, #FEE77F 15.81%, #FFD92F 90.38%);
+
+    color: #000;
 }
 
 .absent{
     background: #787c7e;
-    color: #fff;
+    color: #000;
+}
+
+.clientStatus {
+  position: absolute;
+  right: 0;
+  padding: 10px;
+}
+
+.peerConnected::after {
+  content: "";
+  display: inline-block;
+  margin-left: 7px;
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(122.83deg, #C3FFA7 25.08%, #5BF2C5 92.36%);
+  border-radius: 1000px;
+  border: 2px solid #121213;
+}
+
+.peerDisconnected::after {
+  content: "";
+  display: inline-block;
+  margin-left: 7px;
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(113.32deg, #FEE77F 15.81%, #FFD92F 90.38%);
+  border-radius: 1000px;
+  border: 2px solid #121213;
 }

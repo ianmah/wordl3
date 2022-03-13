@@ -20,6 +20,7 @@ const App = () => {
   const [ipfs, setIpfs] = useState();
   const [clientId, setClientId] = useState('');
   const [solution, setSolution] = useState('');
+  const [peerConnected, setPeerConnected] = useState('');
   const [score, setScore] = useState({});
 
   const resetBoard = () => {
@@ -85,6 +86,8 @@ const App = () => {
             enterBoardWord(parsedData.word)
           } else if (parsedData.type === 'score') {
             setScore(parsedData)
+          } else if (parsedData.type === 'peer') {
+            setPeerConnected(true)
           }
 
 
@@ -147,7 +150,6 @@ const App = () => {
 
     console.log("The unique id that was generated: " + small_id)
 
-
     async function reset() {
       if (ipfs && TOPIC) {
         console.log(`Unsubscribing from TOPIC ${TOPIC}`)
@@ -182,7 +184,15 @@ const App = () => {
       if (ipfs) {
         await subscribe(TOPIC)
         // await send(`hello from stan's mac, ${clientId}`)
+        setInterval(async () => {
+          if (solution) {
+            await send({
+              type: 'peer',
+              clientId
+            })
 
+          }
+        }, 1000);
       }
     }
     initMessages()
@@ -337,6 +347,9 @@ const App = () => {
       <div className='top'>
         <div className='title'>WORDL3</div>
         {/* <button className="reset-board" onClick={resetBoard}>{"\u27f3"}</button> */}
+        <div className={`clientStatus ${peerConnected ? 'peerConnected' : 'peerDisconnected'}`}>
+          Peer connected  
+        </div>
       </div>
       {message && <div className='message'>
         {message}
