@@ -137,3 +137,20 @@
   border-radius: 1000px;
   border: 2px solid #121213;
 }
+
+.inputcustom {
+  font-size: 28px;
+  background: none;
+  width: 160px;
+  border: 2px solid black;
+  border-radius: 8px;
+  box-shadow: none;
+  margin: 12px auto;
+  position: relative;
+  display: block;
+  text-transform: uppercase;
+}
+
+.thingy {
+  width: 400px;
+}
