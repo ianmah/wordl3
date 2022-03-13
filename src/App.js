@@ -16,6 +16,8 @@ const App = () => {
   const [charArray, setCharArray] = useState([]);
   const [ipfs, setIpfs] = useState();
   const [clientId, setClientId] = useState('');
+  const [solution, setSolution] = useState('');
+  const [score, setScore] = useState({});
 
   const resetBoard = () => {
     var alphabetIndex = Math.floor(Math.random() * 26);
@@ -40,8 +42,8 @@ const App = () => {
     // if (!ipfs) throw new Error('Connect to a node first')
 
     console.log(`Sending message to ${TOPIC}...`)
-    await ipfs.pubsub.publish(TOPIC, msg)
-    console.log(`<span class="green">Success!</span>`)
+    await ipfs.pubsub.publish(TOPIC, JSON.stringify(msg))
+    // console.log(`<span class="green">Success!</span>`)
   }
 
 
@@ -76,6 +78,13 @@ const App = () => {
 
           console.log(parsedData)
 
+          if (parsedData.type === 'guess') {
+            enterBoardWord(parsedData.word)
+          } else if (parsedData.type === 'score') {
+            setScore(parsedData)
+          }
+
+
         }
       } catch (_) {
         // console.log(uint8ArrayToString(msg.data, 'base16'))
@@ -85,8 +94,28 @@ const App = () => {
     // TOPIC = nextTopic
   }
 
+  useEffect(() => {
+    console.log('scoreChanged', score)
+    if (!score.word) return;
+    let rowIndex = boardData.rowIndex;
+    let boardRowStatus = boardData.boardRowStatus
+    let boardWords = boardData.boardWords
+    boardRowStatus.push(score.score);
+    boardWords[rowIndex] = `${score.word}`;
+    rowIndex++
+    setBoardData({
+      ...boardData,
+      rowIndex,
+      boardRowStatus,
+      boardWords
+    })
+  }, [score])
+
 
   useEffect(() => {
+    const windowInput = window.prompt('enter a 5 letter word', 'crane')
+    console.log(windowInput)
+    setSolution(windowInput)
     if (!boardData || !boardData.solution) {
       var alphabetIndex = Math.floor(Math.random() * 26);
       var wordIndex = Math.floor(Math.random() * wordList[String.fromCharCode(97 + alphabetIndex)].length);
@@ -145,7 +174,7 @@ const App = () => {
     async function initMessages() {
       if (ipfs) {
         await subscribe(TOPIC)
-        await send(`hello from stan's mac, ${clientId}`)
+        // await send(`hello from stan's mac, ${clientId}`)
 
       }
     }
@@ -167,7 +196,38 @@ const App = () => {
     }, 2000);
   }
 
+  const handleWord = async (word) => {
+    await send({
+      type: 'guess',
+      word,
+      clientId
+    })
+  }
+
+
   const enterBoardWord = async (word) => {
+    let score = []
+    for (var index = 0; index < word.length; index++) {
+      if (solution.charAt(index) === word.charAt(index)) {
+        score.push('correct')
+      } else if (solution.includes(word.charAt(index))) {
+        score.push('present')
+      } else {
+        score.push("absent");
+      }
+    }
+
+    console.log(score)
+    await send({
+      type: 'score',
+      word,
+      score,
+      clientId
+    })
+
+  }
+
+  const enterBoardWord2 = async (word) => {
     let boardWords = boardData.boardWords;
     let boardRowStatus = boardData.boardRowStatus;
     let solution = boardData.solution;
@@ -178,11 +238,6 @@ const App = () => {
     let rowStatus = [];
     let matchCount = 0;
     let status = boardData.status;
-
-    await send(JSON.stringify({
-      word,
-      clientId
-    }))
 
     for (var index = 0; index < word.length; index++) {
       if (solution.charAt(index) === word.charAt(index)) {
@@ -244,7 +299,7 @@ const App = () => {
           handleMessage("Not in word list");
           return;
         }
-        enterBoardWord(word);
+        handleWord(word);
         setCharArray([]);
       } else {
         handleMessage("Not enough letters");
