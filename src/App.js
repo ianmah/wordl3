@@ -7,9 +7,10 @@ import { create as IpfsHttpClient } from 'ipfs-http-client'
 import { toString as uint8ArrayToString } from "uint8arrays/to-string";
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
+import axios from 'axios'
 
 // const ID = Math.random().toFixed(6)
-const TOPIC = 'wordl3-comms-123'
+const TOPIC = 'wordl3-comms-1231212'
 let correctCharArray = []
 let presentCharArray = []
 let absentCharArray = []
@@ -25,6 +26,10 @@ const App = () => {
   const [peerConnected, setPeerConnected] = useState('');
   const [score, setScore] = useState({});
   const [modalShow, setModalShow] = useState(false);
+
+  const [NFTMintData, setNFTMintData] = useState('');
+  const [mintToAddress, setMintToAddress] = useState('');
+
 
   const resetBoard = () => {
     var alphabetIndex = Math.floor(Math.random() * 26);
@@ -101,6 +106,10 @@ const App = () => {
     })
 
     // TOPIC = nextTopic
+  }
+
+  async function mintNFT() {
+    console.log("mint nft")
   }
 
   useEffect(() => {
@@ -189,6 +198,35 @@ const App = () => {
 
     nodeConnect('/ip4/127.0.0.1/tcp/5002')
 
+  }, []);
+
+  useEffect(()=> {
+    async function mintNFT(contractAddress) {
+      const options = {
+        method: 'POST',
+        url: 'https://api.nftport.xyz/v0/mints/easy/urls',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'e53c7e69-eb94-4906-b02a-82bb39a1adb6'
+        },
+        data: {
+          chain: 'polygon',
+          name: 'Wordl3',
+          description: 'You successfully guessed a wordle!!!',
+          file_url: 'https://ipfs.io/ipfs/bafkreiczwotfdnf25l3qor7tlduo3j5tsrxf7b5qlkqnil5dxjksmn6ea4',
+          mint_to_address: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
+        }
+      };
+      
+      axios.request(options).then(function (response) {
+        console.log(response.data);
+        setNFTMintData(response)
+      }).catch(function (error) {
+        console.error(error);
+      });
+  
+  
+    }
   }, []);
 
   useEffect(() => {
@@ -369,14 +407,16 @@ const App = () => {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <h4>Centered Modal</h4>
+          <h4>NFT Mint Data</h4>
           <p>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-            consectetur ac, vestibulum at eros.
+          {NFTMintData}
           </p>
         </Modal.Body>
         <Modal.Footer>
+
+          <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"> </input>
+          <Button onClick={mintNFT(mintToAddress)}>Mint NFT</Button>
+          
           <Button onClick={props.onHide}>Close</Button>
         </Modal.Footer>
       </Modal>
