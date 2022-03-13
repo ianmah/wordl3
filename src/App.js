@@ -7,6 +7,7 @@ import { create as IpfsHttpClient } from 'ipfs-http-client'
 import { toString as uint8ArrayToString } from "uint8arrays/to-string";
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
+import Achievements from './components/Achievements';
 
 // const ID = Math.random().toFixed(6)
 const TOPIC = 'wordl3-comms-123'
@@ -365,16 +366,11 @@ const App = () => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Modal heading
+            Achievements
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <h4>Centered Modal</h4>
-          <p>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-            consectetur ac, vestibulum at eros.
-          </p>
+          <Achievements />
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={props.onHide}>Close</Button>
