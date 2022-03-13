@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import UpIcon from './UpIcon'
-import { ADDR_POST, ADDR_MEMBER } from '../constants'
+import { ADDR_POST, ADDR_MEMBER } from '../constants/constants';
 
-const Post = styled.div`
+const NFTAchievements = styled.div`
     margin-top: 1em;
     background: #fff;
     padding: 1.5em;
@@ -16,13 +15,13 @@ const Post = styled.div`
     flex-direction: row;
 `
 
-const PostTitle = styled.h2`
+const Title = styled.h2`
     font-size: 18px;
     margin: 0;
     font-weight: normal;
 `
 
-const Achievements = ({ contract }) => {
+const Achievements = ( ) => {
     const [nfts, setNfts] = useState([])
 
     useEffect(() => {
@@ -60,16 +59,13 @@ const Achievements = ({ contract }) => {
         <>
             {
                 nfts.map(nft => (
-                    <Post key={nft.token_id}>
-                        <div style={{ marginRight: '1em' }}>
-                            <UpIcon/>
-                        </div>
+                    <NFTAchievements key={nft.token_id}>
                         <div>
-                            <PostTitle>{String(nft.name)}</PostTitle>
+                            <Title>{String(nft.name)}</Title>
                             <p>{String(nft.description)}</p>
                             Posted by: {nft.original_owner}
                         </div>
-                    </Post>
+                    </NFTAchievements>
                 ))
             }
         </>
