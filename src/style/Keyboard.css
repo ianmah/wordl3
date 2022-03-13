@@ -1,0 +1,41 @@
+.keyboard-rows{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.row{
+    width: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+button{
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    /* background: #d3d6da; */
+    background: none;
+    padding: 20px 18px;
+    border: none;
+    text-transform: uppercase;
+    border: 2px solid #121213;
+    border-radius: 8px;
+}
+.key-correct{
+    background: linear-gradient(122.83deg, #C3FFA7 25.08%, #5BF2C5 92.36%);
+    color: #000;
+}
+
+.key-present{
+    background: linear-gradient(113.32deg, #FEE77F 15.81%, #FFD92F 90.38%);
+
+    color: #000;
+}
+
+.key-absent{
+    background: #787c7e;
+    color: #000;
+}

@@ -68,3 +68,20 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+
+## Stanford's instructions:
+
+1. Follow README from https://github.com/ipfs-examples/js-ipfs-examples/tree/master/examples/http-client-browser-pubsub
+On 2. Start the IPFS nodes, make sure u add localhost:8888 and localhost:3000 (copy pasta below)so u don't get CORS errors.
+Either one, depending on the which node ur running
+`ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["http://127.0.0.1:8888", "http://localhost:8888", "http://localhost:3000"]'`
+
+`jsipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["http://127.0.0.1:8888", "http://localhost:8888", "http://localhost:3000"]'`
+3. Run the http-client-browser-pubsub project (on localhost:8888)
+4. APR addr: /ip4/127.0.0.1/tcp/5002 (just need to connect to an IPFS node)
+5. Subscribe to "wordl3-topic", can be changed on line 80 on App.js 
+6. Run this project
+7. Should be able see the message hello from stan's mac"
+8. Yay
