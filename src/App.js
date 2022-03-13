@@ -8,6 +8,9 @@ import { toString as uint8ArrayToString } from "uint8arrays/to-string";
 
 // const ID = Math.random().toFixed(6)
 const TOPIC = 'wordl3-commms'
+let correctCharArray = []
+let presentCharArray = []
+let absentCharArray = []
 
 const App = () => {
   const [boardData, setBoardData] = useState(JSON.parse(localStorage.getItem("board-data")));
@@ -103,11 +106,15 @@ const App = () => {
     boardRowStatus.push(score.score);
     boardWords[rowIndex] = `${score.word}`;
     rowIndex++
+    
     setBoardData({
       ...boardData,
       rowIndex,
       boardRowStatus,
-      boardWords
+      boardWords,
+      presentCharArray: [...boardData.presentCharArray, ...score.presentCharArray],
+      correctCharArray: [...boardData.correctCharArray, ...score.correctCharArray],
+      absentCharArray: [...boardData.absentCharArray, ...score.absentCharArray],
     })
   }, [score])
 
@@ -210,10 +217,15 @@ const App = () => {
     for (var index = 0; index < word.length; index++) {
       if (solution.charAt(index) === word.charAt(index)) {
         score.push('correct')
+        if (!correctCharArray.includes(word.charAt(index))) correctCharArray.push(word.charAt(index));
+        if (presentCharArray.indexOf(word.charAt(index)) !== -1) presentCharArray.splice(presentCharArray.indexOf(word.charAt(index)), 1);
       } else if (solution.includes(word.charAt(index))) {
         score.push('present')
+        if (!correctCharArray.includes(word.charAt(index))
+          && !presentCharArray.includes(word.charAt(index))) presentCharArray.push(word.charAt(index));
       } else {
         score.push("absent");
+        if (!absentCharArray.includes(word.charAt(index))) absentCharArray.push(word.charAt(index));
       }
     }
 
@@ -222,7 +234,10 @@ const App = () => {
       type: 'score',
       word,
       score,
-      clientId
+      clientId,
+      presentCharArray,
+      absentCharArray,
+      correctCharArray
     })
 
   }
