@@ -5,6 +5,8 @@ import { wordList } from './constants/data';
 import { v4 as uuid } from 'uuid';
 import { create as IpfsHttpClient } from 'ipfs-http-client'
 import { toString as uint8ArrayToString } from "uint8arrays/to-string";
+import Modal from 'react-bootstrap/Modal'
+import Button from 'react-bootstrap/Button'
 
 // const ID = Math.random().toFixed(6)
 const TOPIC = 'wordl3-commms'
@@ -22,6 +24,7 @@ const App = () => {
   const [solution, setSolution] = useState('');
   const [peerConnected, setPeerConnected] = useState('');
   const [score, setScore] = useState({});
+  const [modalShow, setModalShow] = useState(false);
 
   const resetBoard = () => {
     var alphabetIndex = Math.floor(Math.random() * 26);
@@ -45,7 +48,7 @@ const App = () => {
     if (!TOPIC) throw new Error('Subscribe to a topic first')
     // if (!ipfs) throw new Error('Connect to a node first')
 
-    // console.log(`Sending message to ${TOPIC}...`)
+    console.log(`Sending message to ${TOPIC}...`)
     await ipfs.pubsub.publish(TOPIC, JSON.stringify(msg))
     // console.log(`<span class="green">Success!</span>`)
   }
@@ -107,6 +110,17 @@ const App = () => {
     let boardRowStatus = boardData.boardRowStatus
     let boardWords = boardData.boardWords
     boardRowStatus.push(score.score);
+    console.log('scoreChanged', score)
+    if (score.score) {
+      for (var index = 0; index < 5; index++) {
+        if (score.score[index] !== 'correct') {
+          return;
+        }
+      }
+      
+      setModalShow(true)
+    }
+
     boardWords[rowIndex] = `${score.word}`;
     rowIndex++
     
@@ -123,9 +137,9 @@ const App = () => {
 
 
   useEffect(() => {
-    // const windowInput = window.prompt('enter a 5 letter word', 'crane')
-    // console.log(windowInput)
-    // setSolution(windowInput)
+    const windowInput = window.prompt('enter a 5 letter word', 'crane')
+    console.log(windowInput)
+    setSolution(windowInput)
     if (!boardData || !boardData.solution) {
       var alphabetIndex = Math.floor(Math.random() * 26);
       var wordIndex = Math.floor(Math.random() * wordList[String.fromCharCode(97 + alphabetIndex)].length);
@@ -174,24 +188,9 @@ const App = () => {
     }
 
 
-    nodeConnect('/ip4/127.0.0.1/tcp/5001')
+    nodeConnect('/ip4/127.0.0.1/tcp/5002')
 
   }, []);
-
-  useEffect(() => {
-
-    setInterval(async () => {
-      if (solution) {
-        await send({
-          type: 'peer',
-          clientId
-        })
-
-      }
-    }, 1000);
-
-
-  }, [solution])
 
   useEffect(() => {
 
@@ -356,64 +355,71 @@ const App = () => {
     }
     enterCurrentText(charArray.join("").toLowerCase());
   }
+  
+  function MyVerticallyCenteredModal(props) {
+    return (
+      <Modal
+        {...props}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Modal heading
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <h4>Centered Modal</h4>
+          <p>
+            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
+            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
+            consectetur ac, vestibulum at eros.
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={props.onHide}>Close</Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  }
 
   return (
     <div className='container'>
-      {
-        !solution ? <div className="thingy">
-        {message && <div className='message'>
-          {message}
-        </div>}<div className="top">
-          Enter word for your opponent to guess
-          </div>
-          <form onSubmit={(e) => {
-            e.preventDefault()
-            const word = e.target.elements['word'].value
-            
-            if (!wordList[word.charAt(0)].includes(word)) {
-              handleError();
-              handleMessage("Not in word list");
-              return;
-            } else {
-              setSolution(word)
-            }
-
-
-            }}>
-          <input id="word" className="inputcustom" ></input>
-          </form>
-           </div>
-          : 
-          <><div className='top'>
-            <div className='title'>WORDL3</div>
-            {/* <button className="reset-board" onClick={resetBoard}>{"\u27f3"}</button> */}
-            <div className={`clientStatus ${peerConnected ? 'peerConnected' : 'peerDisconnected'}`}>
-              Peer connected  
-            </div>
-          </div>
-          {message && <div className='message'>
-            {message}
-          </div>}
-          <div className='cube'>
-            {[0, 1, 2, 3, 4, 5].map((row, rowIndex) => (
-              <div className={`cube-row ${boardData && row === boardData.rowIndex && error && "error"}`} key={rowIndex}>
-                {
-                  [0, 1, 2, 3, 4].map((column, letterIndex) => (
-                    <div key={letterIndex} className={`letter ${boardData && boardData.boardRowStatus[row] ? boardData.boardRowStatus[row][column] : ""}`}>
-                      {boardData && boardData.boardWords[row] && boardData.boardWords[row][column]}
-                    </div>
-                  ))
-                }
-              </div>
-            ))}
-          </div>
-          <div className='bottom'>
-            <Keyboard boardData={boardData}
-              handleKeyPress={handleKeyPress} />
-          </div>
-        </>
-      }
+      <div className='top'>
+        <div className='title'>WORDL3</div>
+        {/* <button className="reset-board" onClick={resetBoard}>{"\u27f3"}</button> */}
+        <div className={`clientStatus ${peerConnected ? 'peerConnected' : 'peerDisconnected'}`}>
+          Peer connected  
+        </div>
       </div>
+      {message && <div className='message'>
+        {message}
+      </div>}
+      <div className='cube'>
+        {[0, 1, 2, 3, 4, 5].map((row, rowIndex) => (
+          <div className={`cube-row ${boardData && row === boardData.rowIndex && error && "error"}`} key={rowIndex}>
+            {
+              [0, 1, 2, 3, 4].map((column, letterIndex) => (
+                <div key={letterIndex} className={`letter ${boardData && boardData.boardRowStatus[row] ? boardData.boardRowStatus[row][column] : ""}`}>
+                  {boardData && boardData.boardWords[row] && boardData.boardWords[row][column]}
+                </div>
+              ))
+            }
+          </div>
+        ))}
+      </div>
+      <div>
+        <MyVerticallyCenteredModal
+          show={modalShow}
+          onHide={() => setModalShow(false)}
+        />
+      </div>
+      <div className='bottom'>
+        <Keyboard boardData={boardData}
+          handleKeyPress={handleKeyPress} />
+      </div>
+    </div>
   );
 };
 
