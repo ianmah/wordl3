@@ -9,7 +9,7 @@ import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 
 // const ID = Math.random().toFixed(6)
-const TOPIC = 'wordl3-commms'
+const TOPIC = 'wordl3-comms-123'
 let correctCharArray = []
 let presentCharArray = []
 let absentCharArray = []
@@ -111,16 +111,6 @@ const App = () => {
     let boardWords = boardData.boardWords
     boardRowStatus.push(score.score);
     console.log('scoreChanged', score)
-    if (score.score) {
-      for (var index = 0; index < 5; index++) {
-        if (score.score[index] !== 'correct') {
-          return;
-        }
-      }
-      
-      setModalShow(true)
-    }
-
     boardWords[rowIndex] = `${score.word}`;
     rowIndex++
     
@@ -133,6 +123,15 @@ const App = () => {
       correctCharArray: [...boardData.correctCharArray, ...score.correctCharArray],
       absentCharArray: [...boardData.absentCharArray, ...score.absentCharArray],
     })
+    if (score.score) {
+      for (var index = 0; index < 5; index++) {
+        if (score.score[index] !== 'correct') {
+          return;
+        }
+      }
+      
+      setModalShow(true)
+    }
   }, [score])
 
 
